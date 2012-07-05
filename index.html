@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>fnt - f* networked tiddlers</title>
+        <style>
+#message {
+    color: red;
+    font-size: 150%;
+}
+</style>
+    </head>
+    <body>
+        <h1>Demo</h1>
+
+        <input size="50" name="host" value="http://cdent.tiddlyspace.com/"><br/>
+        <input size="50" placeholder="bag" name="bag"
+        value="cdent_public"><br/>
+        <input size="50" placeholder="title" name="title"
+        value="HelloThere"><br/>
+        <textarea placeholder="put some stuff here if you want put"
+            name="text"></textarea><br>
+        <input name="get" value="get" type="submit">
+        <input name="put" value="put" type="submit">
+        <input name="delete" value="delete" type="submit">
+
+        <div id="message"></div>
+        <div id="output"></div>
+    </body>
+    <script
+        src="http://tiddlyspace.com/bags/common/tiddlers/jquery.js"></script>
+    <script src="fnt.js"></script>
+<script>
+/* excuse all the boiler plate */
+$(function() {
+    $('body').bind('tiddlerGet', function(ev, tiddler) {
+        $('#output').text(tiddler.toJSON());
+    });
+
+    $('body').bind('tiddlerPut', function(ev, tiddler) {
+        $('#output').text(tiddler.toJSON());
+    });
+
+    $('body').bind('tiddlerDelete', function(ev, tiddler) {
+        $('#message').text('deleted ' + tiddler.title);
+    });
+
+    $('body').bind('error', function(ev, message) {
+        $('#message').html('<h1>' + message + '</h1>');
+    });
+
+    $('input[name="get"]').click(function() {
+        $('#message').empty();
+        $('#output').empty();
+
+        var host = $('input[name="host"]').val();
+        var bag = $('input[name="bag"]').val();
+        var title = $('input[name="title"]').val();
+
+        var tiddler = new tiddlyweb.Tiddler(title);
+        tiddler.host = host;
+        tiddler.bag = bag;
+        tiddlyweb.getTiddler(tiddler);
+    });
+
+    $('input[name="put"]').click(function() {
+        $('#message').empty();
+        $('#output').empty();
+
+        var host = $('input[name="host"]').val();
+        var bag = $('input[name="bag"]').val();
+        var title = $('input[name="title"]').val();
+        var text = $('textarea[name="text"]').val();
+
+        var tiddler = new tiddlyweb.Tiddler(title)
+        tiddler.host = host;
+        tiddler.bag = bag;
+        tiddler.text = text;
+        tiddlyweb.putTiddler(tiddler);
+    });
+
+    $('input[name="delete"]').click(function() {
+        $('#message').empty();
+        $('#output').empty();
+
+        var host = $('input[name="host"]').val();
+        var bag = $('input[name="bag"]').val();
+        var title = $('input[name="title"]').val();
+
+        var tiddler = new tiddlyweb.Tiddler(title)
+        tiddler.host = host;
+        tiddler.bag = bag;
+        tiddlyweb.deleteTiddler(tiddler);
+    });
+
+});
+</script>
+</html>

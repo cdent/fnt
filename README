@@ -1,0 +1,14 @@
+fnt - f* networked tiddlers
+
+A simple JavaScript library for getting, putting and deleting tiddlers 
+implemented in an intentionally naive and simple way, to see if the simple
+cases can be covered simply, by leaving out the complex cases.
+
+This is essentially a duplicate of code I've written over and over again
+in various SPAs.
+
+See index.html for sample use.
+
+Thanks to @fnd for the name.
+
+Copyright 2012, Chris Dent for Peermore Limited
