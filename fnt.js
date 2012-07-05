@@ -20,6 +20,9 @@
  * jQuery is used to drive the underlying AJAX and Event handling. See
  * index.html for sample use.
  *
+ * The code is verbose, boiler-platey and vertically over exuberant
+ * on purpose.
+ *
  */
 
 var tiddlyweb = tiddlyweb || {};
@@ -61,7 +64,10 @@ tiddlyweb.Tiddler = function(title) {
 tiddlyweb.Tiddler.prototype.uri = function() {
 
     if (!this.host) {
-        $('body').trigger('error', 'host required');
+        $(document).trigger('error', {
+            tiddler: this,
+            method: 'uri',
+            msg: 'host required'});
         return;
     }
 
@@ -70,8 +76,10 @@ tiddlyweb.Tiddler.prototype.uri = function() {
         if (this.recipe) {
             container = 'recipes/' + encodeURIComponent(this.recipe);
         } else {
-            $('body').trigger('error',
-                    'no container data provided bag or recipe required');
+            $(document).trigger('error', {
+                tiddler: this,
+                method: 'uri',
+                msg: 'no container data provided, bag or recipe required'});
             return;
         }
     } else {
@@ -144,11 +152,15 @@ tiddlyweb.getTiddler = function(tiddler) {
             dataType: 'json',
             success: function(data) {
                 tiddler.fromJSON(data);
-                $('body').trigger('tiddlerGet', tiddler);
+                console.log('got', tiddler);
+                $(document).trigger('tiddlerGet', tiddler);
             },
             error: function(xhr, status, message) {
-                $('body').trigger('error', 'failed to get ' + tiddler.title
-                    + ': ' + message + ' ' + xhr.responseText);
+                $(document).trigger('error', {
+                    tiddler: tiddler,
+                    method: 'get',
+                    'status': status,
+                    msg: message + '\n' + xhr.responseText});
             }
         });
     }
@@ -171,11 +183,14 @@ tiddlyweb.putTiddler = function(tiddler) {
             processData: false,
             contentType: 'application/json',
             success: function() {
-                $('body').trigger('tiddlerPut', tiddler);
+                $(document).trigger('tiddlerPut', tiddler);
             },
             error: function(xhr, status, message) {
-                $('body').trigger('error', 'failed to put ' + tiddler.title
-                    + ': ' + message + ' ' + xhr.responseText);
+                $(document).trigger('error', {
+                    tiddler: tiddler,
+                    method: 'put',
+                    'status': status,
+                    msg: message + '\n' + xhr.responseText});
             }
         });
     }
@@ -196,11 +211,14 @@ tiddlyweb.deleteTiddler = function(tiddler) {
             url: uri,
             type: 'DELETE',
             success: function() {
-                $('body').trigger('tiddlerDelete', tiddler);
+                $(document).trigger('tiddlerDelete', tiddler);
             },
             error: function(xhr, status, message) {
-                $('body').trigger('error', 'failed to delete ' + tiddler.title
-                    + ': ' + message + ' ' + xhr.responseText);
+                $(document).trigger('error', {
+                    tiddler: tiddler,
+                    method: 'put',
+                    'status': status,
+                    msg: message + '\n' + xhr.responseText});
             }
         });
     }
